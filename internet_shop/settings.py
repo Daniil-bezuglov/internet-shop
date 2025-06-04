@@ -1,6 +1,5 @@
 import os
 from pathlib import Path
-import dj_database_url
 from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -59,7 +58,10 @@ WSGI_APPLICATION = 'internet_shop.wsgi.application'
 
 # Database
 DATABASES = {
-    'default': dj_database_url.config(default=os.environ.get('DATABASE_URL', f'sqlite:///{BASE_DIR}/db.sqlite3'))
+        'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 }
 
 # Password validation
