@@ -1,0 +1,99 @@
+{% extends "store/base.html" %}
+
+{% block title %}Личный кабинет{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-person-circle me-2"></i>Профиль
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
+                             style="width: 100px; height: 100px;">
+                            <i class="bi bi-person text-primary" style="font-size: 3rem;"></i>
+                        </div>
+                        <h5 class="mb-1">{{ user.get_full_name|default:user.username }}</h5>
+                        <p class="text-muted mb-0">{{ user.email }}</p>
+                    </div>
+                    <div class="list-group list-group-flush">
+                        <a href="{% url 'store:profile' %}" class="list-group-item list-group-item-action active">
+                            <i class="bi bi-clock-history me-2"></i>История заказов
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action">
+                            <i class="bi bi-gear me-2"></i>Настройки
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-clock-history me-2"></i>История заказов
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if orders %}
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>№ Заказа</th>
+                                        <th>Дата</th>
+                                        <th>Статус</th>
+                                        <th>Сумма</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for order in orders %}
+                                        <tr>
+                                            <td>#{{ order.id }}</td>
+                                            <td>{{ order.created|date:"d.m.Y H:i" }}</td>
+                                            <td>
+                                                {% if order.status == 'paid' %}
+                                                    <span class="badge bg-success">Оплачен</span>
+                                                {% elif order.status == 'pending' %}
+                                                    <span class="badge bg-warning">Ожидает оплаты</span>
+                                                {% elif order.status == 'shipped' %}
+                                                    <span class="badge bg-info">Отправлен</span>
+                                                {% elif order.status == 'delivered' %}
+                                                    <span class="badge bg-success">Доставлен</span>
+                                                {% elif order.status == 'cancelled' %}
+                                                    <span class="badge bg-danger">Отменен</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>{{ order.total_price }} ₽</td>
+                                            <td>
+                                                <a href="{% url 'store:order_detail' order.id %}" 
+                                                   class="btn btn-sm btn-outline-primary">
+                                                    <i class="bi bi-eye me-1"></i>Подробнее
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="bi bi-bag-x text-muted" style="font-size: 4rem;"></i>
+                            <h4 class="mt-3">У вас пока нет заказов</h4>
+                            <p class="text-muted">Сделайте свой первый заказ в нашем магазине</p>
+                            <a href="{% url 'store:product_list' %}" class="btn btn-primary mt-3">
+                                <i class="bi bi-arrow-right me-2"></i>Перейти к покупкам
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %} 

@@ -1,0 +1,130 @@
+{% extends "store/base.html" %}
+
+{% block title %}
+    {% if category %}{{ category.name }}{% else %}Все товары{% endif %}
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Категории</h5>
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="{% url 'store:product_list' %}" 
+                       class="list-group-item list-group-item-action {% if not category %}active{% endif %}">
+                        Все товары
+                    </a>
+                    {% for c in categories %}
+                        <a href="{{ c.get_absolute_url }}" 
+                           class="list-group-item list-group-item-action {% if category and category.slug == c.slug %}active{% endif %}">
+                            {{ c.name }}
+                        </a>
+                        {% if c.children.all %}
+                            {% for subcat in c.children.all %}
+                                <a href="{{ subcat.get_absolute_url }}" 
+                                   class="list-group-item list-group-item-action ps-4 {% if category and category.slug == subcat.slug %}active{% endif %}">
+                                    └ {{ subcat.name }}
+                                </a>
+                            {% endfor %}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Фильтр по цене</h5>
+                </div>
+                <div class="card-body">
+                    <form method="get" class="price-filter">
+                        <div class="mb-3">
+                            <label for="min_price" class="form-label">От</label>
+                            <input type="number" class="form-control" id="min_price" name="min_price" 
+                                   value="{{ min_price }}" min="0">
+                        </div>
+                        <div class="mb-3">
+                            <label for="max_price" class="form-label">До</label>
+                            <input type="number" class="form-control" id="max_price" name="max_price" 
+                                   value="{{ max_price }}" min="0">
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-funnel me-1"></i>Применить
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-9">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="get" class="d-flex">
+                        <input type="text" name="query" class="form-control me-2" 
+                               placeholder="Поиск товаров..." value="{{ query }}">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            {% if category and category.children.exists %}
+            <div class="alert alert-info mb-4">
+                <i class="bi bi-info-circle me-2"></i>
+                Показаны товары из подкатегорий: 
+                {% for subcat in category.children.all %}
+                    <a href="{{ subcat.get_absolute_url }}" class="alert-link">{{ subcat.name }}</a>{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+                {% for product in products %}
+                    <div class="col">
+                        <div class="card h-100">
+                            {% if product.image %}
+                                <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                            {% else %}
+                                <div class="card-img-top bg-light d-flex align-items-center justify-content-center" 
+                                     style="height: 200px;">
+                                    <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
+                                </div>
+                            {% endif %}
+                            <div class="card-body">
+                                <h5 class="card-title">{{ product.name }}</h5>
+                                <p class="card-text text-muted">{{ product.short_description }}</p>
+                                <p class="card-text">
+                                    <strong class="text-primary">{{ product.price }} ₽</strong>
+                                </p>
+                                {% if product.stock <= 5 and product.stock > 0 %}
+                                    <p class="card-text text-warning">
+                                        <i class="bi bi-exclamation-triangle me-1"></i>
+                                        Осталось всего {{ product.stock }} шт.
+                                    </p>
+                                {% elif product.stock == 0 %}
+                                    <p class="card-text text-danger">
+                                        <i class="bi bi-x-circle me-1"></i>
+                                        Нет в наличии
+                                    </p>
+                                {% endif %}
+                            </div>
+                            <div class="card-footer bg-white border-top-0">
+                                <a href="{{ product.get_absolute_url }}" class="btn btn-outline-primary w-100">
+                                    <i class="bi bi-eye me-1"></i>Подробнее
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="col-12">
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle me-2"></i>Товары не найдены
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %} 
