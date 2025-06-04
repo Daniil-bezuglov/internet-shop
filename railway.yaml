@@ -1,0 +1,12 @@
+services:
+  web:
+    build:
+      dockerfile: Dockerfile
+    envVars:
+      - key: DEBUG
+        value: "False"
+      - key: SECRET_KEY
+        value: "your-production-secret-key"
+      - key: ALLOWED_HOSTS
+        value: "your-railway-app-url.railway.app"
+    startCommand: gunicorn internet_shop.wsgi 
