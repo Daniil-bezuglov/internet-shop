@@ -1,8 +1,7 @@
 Django==5.0.2
-Pillow==10.2.0
-django-crispy-forms==2.1
-crispy-bootstrap5==2023.10
+Pillow
+django-crispy-forms
+crispy-bootstrap5
 gunicorn
 whitenoise
-dj-database-url
 python-dotenv 
