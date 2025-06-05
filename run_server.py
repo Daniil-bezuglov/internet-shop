@@ -15,7 +15,7 @@ def get_local_ip():
 
 if __name__ == "__main__":
     local_ip = get_local_ip()
-    port = 8000
+    port = 10000
     
     print(f"\n{'='*50}")
     print(f"Запуск сервера в локальной сети")
