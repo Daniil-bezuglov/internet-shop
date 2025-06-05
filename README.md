@@ -26,7 +26,7 @@
 
 1. Клонируйте репозиторий:
 ```bash
-git clone <url-репозитория>
+git clone https://github.com/Daniil-bezuglov/internet-shop
 cd internet-shop
 ```
 
