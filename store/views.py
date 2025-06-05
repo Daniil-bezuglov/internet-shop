@@ -8,6 +8,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.db.models import Q
 from .cart import Cart
+from django.http import HttpResponse
 
 @login_required
 def product_list(request, category_slug=None):
@@ -191,3 +192,6 @@ def register(request):
     else:
         form = UserRegistrationForm()
     return render(request, 'store/register.html', {'form': form})
+
+def healthcheck(request):
+    return HttpResponse('ok')
